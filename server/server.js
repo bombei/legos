@@ -9,8 +9,8 @@ var app = express();
 
 app.use(bodyParser.json());
 
-app.post('/peca', (req, res) => {
-   console.log(req.body);
+app.post('/peca/:id', (req, res) => {
+   res.status(200).send(JSON.stringify(req.body, undefined, 2));
 });
 
  app.listen(port, () => {

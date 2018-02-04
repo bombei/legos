@@ -6,8 +6,8 @@ var app = express();
 
 
 
- app.get('/', (req, response) => {
-    app.send('hello world!');
+ app.get('/', (req, res) => {
+    res.send('hello world!');
  });
 
  app.listen(port, () => {

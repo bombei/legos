@@ -14,3 +14,5 @@ var Peca = mongoose.model('Peca', {
     required: true,
   }
 });
+
+model.exports = {Peca};

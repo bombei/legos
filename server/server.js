@@ -10,7 +10,17 @@ var app = express();
 app.use(bodyParser.json());
 
 app.post('/peca/:id', (req, res) => {
-   res.status(200).send(JSON.stringify(req.body, undefined, 2));
+   var peca = new Peca({
+      codigo:req.body.codigo,
+      cor:req.body.cor,
+      tamanho:req.body.tamanho,
+   });
+
+   peca.save().then((doc) => {
+      res.status(200).send(doc);
+   }, (e) => {
+      res.status(400).send(e);
+   });
 });
 
  app.listen(port, () => {

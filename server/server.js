@@ -24,7 +24,7 @@ app.post('/peca', (req, res) => {
 });
 
 app.get('/peca', (req, res) => {
-   peca.find().then((pecas) =>{
+   Peca.find().then((pecas) =>{
       res.status(200).send({pecas});
    }, (e) => {
       res.status(400).send(e);

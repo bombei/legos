@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
-var Peca = mongoose.model('Peca', {
+var schema = mongoose.Schema;
+var PecaSC = new schema({
   codigo:{
     type: Number,
     required: true,
@@ -15,4 +16,6 @@ var Peca = mongoose.model('Peca', {
   }
 });
 
-model.exports = {Peca};
+var Peca = mongoose.model('Peca', PecaSC);
+
+module.exports = {Peca};

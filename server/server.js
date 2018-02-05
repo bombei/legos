@@ -9,7 +9,7 @@ var app = express();
 
 app.use(bodyParser.json());
 
-app.post('/peca/:id', (req, res) => {
+app.post('/peca', (req, res) => {
    var peca = new Peca({
       codigo:req.body.codigo,
       cor:req.body.cor,
@@ -23,6 +23,13 @@ app.post('/peca/:id', (req, res) => {
    });
 });
 
+app.get('/peca', (req, res) => {
+   peca.find().then((pecas) =>{
+      res.status(200).send({pecas});
+   }, (e) => {
+      res.status(400).send(e);
+   })
+});
  app.listen(port, () => {
    console.log(`Server running on port ${port}`);
  });

@@ -4,12 +4,21 @@ var _ = require('lodash');
 
 var {mongoose} = require('./../db/mongoose.js');
 var {Peca} = require('./../models/peca.js');
+var {Kit} = require('./../models/kit.js');
+var {PecaKit} = require('./../models/pecaKit.js');
+var {User} = require('./../models/user.js');
+
+var {kitCompleto} = require('./../controllers/kit.js');
+
+
 var {ObjectID} = require('mongodb');
 
 const port = process.env.PORT || 3000;
 var app = express();
 
 app.use(bodyParser.json());
+
+// POST all
 
 app.post('/peca', (req, res) => {
    var peca = new Peca({
@@ -25,6 +34,47 @@ app.post('/peca', (req, res) => {
    });
 });
 
+app.post('/kit', (req, res) => {
+   var kit = new Kit({
+      codigo:req.body.codigo,
+      imagem:req.body.imagem,
+      completed:req.body.completed,
+   });
+
+   kit.save().then((doc) => {
+      res.status(200).send(doc);
+   }, (e) => {
+      res.status(400).send(e);
+   });
+});
+
+app.post('/pecaKit', (req, res) =>{
+   PecaKit.find({ id_Kit: ObjectID(req.body.id_Kit), id_Peca: ObjectID(req.body.id_Peca) }).then((Asso) => {
+      if (Asso){
+         var quantidade = Asso.quantidade + 1;
+      }
+   });
+   var pecaKit = new PecaKit({
+      id_Peca: req.body.id_Peca,
+      id_Kit: req.body.id_Kit,
+      quantidade: quantidade,
+   });
+   pecaKit.save();
+});
+
+
+app.post('/user', (req, res) => {
+   var body = _.pick(req.body, ['email', 'password']);
+   var user = new User(body);
+
+   user.save().then((user) => {
+      res.send(user);
+   }).catch((e) => {
+      res.status(400).send();
+   });
+});
+//GET ALL
+
 app.get('/peca', (req, res) => {
    Peca.find().then((pecas) =>{
       res.status(200).send({pecas});
@@ -32,6 +82,16 @@ app.get('/peca', (req, res) => {
       res.status(400).send(e);
    })
 });
+
+app.get('/kit', (req, res) => {
+   Kit.find().then((kits) =>{
+      res.status(200).send({kits});
+   }, (e) => {
+      res.status(400).send(e);
+   })
+});
+
+// Get BY id
 
 app.get('/peca/:id', (req, res) => {
    var id = req.params.id;
@@ -50,6 +110,25 @@ app.get('/peca/:id', (req, res) => {
 
 });
 
+app.get('/kit/:id', (req, res) => {
+   var id = req.params.id;
+   if (!ObjectID.isValid(id)){
+      return res.status(404).send();
+   }
+
+   Kit.findById(id).then((kit) => {
+      if(!kit){
+         return res.status(404).send();
+      }
+      res.send({kit});
+   }).catch((e) => {
+      res.status(400).send(e);
+   })
+
+});
+
+//DELETE BY ID
+
 app.delete('/peca/:id', (req, res) =>{
    var id = req.params.id;
    if (!ObjectID.isValid(id)){
@@ -61,6 +140,26 @@ app.delete('/peca/:id', (req, res) =>{
          return res.status(404).send();
       }
       res.send(peca);
+   }).catch((e) => {
+      res.status(400).send();
+   });
+});
+
+app.delete('/kit/:id', (req, res) =>{
+   var id = req.params.id;
+   if (!ObjectID.isValid(id)){
+      return res.status(404).send();
+   }
+
+   Kit.findByIdAndRemove(id).then((kit) =>{
+      if (!kit){
+         return res.status(404).send();
+      }
+      res.send(kit);
+      PecaKit.remove({ id_Kit: ObjectID(id) }, (e) => {
+         console.log(e);
+      })
+
    }).catch((e) => {
       res.status(400).send();
    });

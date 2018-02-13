@@ -10,7 +10,7 @@ var User = mongoose.model('User',{
       unique: true,
       validate: {
         validator: validator.isEmail,
-        message: ´{VALUE} Não é um mail válido!´
+        message: 'Não é um mail válido!',
       },
     },
     password: {
@@ -23,7 +23,7 @@ var User = mongoose.model('User',{
             type: String,
             requires: true,
         },
-        token{
+        token: {
             type: String,
             requires: true,
         }

@@ -49,17 +49,42 @@ app.post('/kit', (req, res) => {
 });
 
 app.post('/pecaKit', (req, res) =>{
+   let quantidade = 1;
    PecaKit.find({ id_Kit: ObjectID(req.body.id_Kit), id_Peca: ObjectID(req.body.id_Peca) }).then((Asso) => {
-      if (Asso){
-         var quantidade = Asso.quantidade + 1;
+      if (Asso.length > 0){
+         console.log(Asso.length);
+         let quantidade = Asso[0].quantidade + 1;
+         //return res.status(303).send(Asso);
+         if (!ObjectID.isValid(req.body.id_Kit) || !ObjectID.isValid(req.body.id_Peca)){
+            return res.status(404).send("ERR 1");
+         }
+
+         var body = _.pick(req.body, ['id_Peca', 'id_Kit']);
+         body.quantidade = quantidade;
+         PecaKit.findByIdAndUpdate(ObjectID(Asso[0]._id), {$set: body}, {new: true}).then((pk) => {
+            if (!pk){
+               return res.status(404).send("ERR2");
+            }
+            res.send({pk});
+         }).catch((e) => {
+            res.status(400).send(e);
+         });
+
+
+      } else {
+         var pecaKit = new PecaKit({
+            id_Peca: req.body.id_Peca,
+            id_Kit: req.body.id_Kit,
+            quantidade: quantidade,
+         });
+         pecaKit.save().then(pk =>{
+            res.send(pk);
+         }).catch((e) => {
+            res.status(400).send();
+         });
       }
    });
-   var pecaKit = new PecaKit({
-      id_Peca: req.body.id_Peca,
-      id_Kit: req.body.id_Kit,
-      quantidade: quantidade,
-   });
-   pecaKit.save();
+
 });
 
 

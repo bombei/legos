@@ -148,8 +148,20 @@ app.get('/kit/:id', (req, res) => {
       res.send({kit});
    }).catch((e) => {
       res.status(400).send(e);
-   })
+   });
 
+});
+
+app.get('/pecasKit/:id', (req, res) => {
+   var id = req.params.id;
+   PecaKit.find({ 'id_Kit': ObjectID(id)}).then((pecas) => {
+      if (!pecas){
+         return res.status(404).send();
+      }
+      res.send({pecas});
+   }).catch((e) => {
+      res.status(400).send();
+   });
 });
 
 //DELETE BY ID

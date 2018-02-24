@@ -4,10 +4,12 @@ var schema = mongoose.Schema;
 var PecaKitSc = new schema({
   id_Peca:{
     type: String,
+    // type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   id_Kit:{
     type: String,
+    // type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   quantidade:{

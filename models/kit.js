@@ -5,6 +5,7 @@ var KitSc = new schema({
   codigo:{
     type: Number,
     required: true,
+    unique: true,
   },
   imagem:{
     type: String,

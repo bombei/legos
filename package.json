@@ -18,7 +18,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server/server.js"
+    "start": "nodemon server/server.js",
+    "startMongo":"~/mongo/bin/./mongod --dbpath ~/mongo-data"
   },
   "repository": {
     "type": "git",

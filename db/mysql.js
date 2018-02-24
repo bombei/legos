@@ -11,17 +11,22 @@ var mysql = require ('mysql');
 
 
 
-
+    let result = []
 
     function query(sql, callback) {
         conn.connect(function(err){
             if (err) callback(err, null);
         });
+        //conn.query(sql).on('err').on('result')
         conn.query(sql, (err, result, fields) => {
             if (err) callback(err, null);
             callback(null, result);
+        }).on('end',() => {
+            if(typeof callback == "function") {
+                callback(null,result);
+            } else
+            return result;
         });
-        conn.end();
     }
 
     function save(data, table, id, callback){
